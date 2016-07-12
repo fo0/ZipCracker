@@ -1,6 +1,5 @@
 '''
 Created on 26.07.2015
-
 @author: max
 '''
 
@@ -41,8 +40,19 @@ class MyFrame(Frame):
                 try:
                     foo = str(line,encoding='utf-8')
                     zip_file.extractall(pwd=line.strip(b'\n'))
-                except RuntimeError:
-                    None
+                except Exception as e:
+                    if 'Bad password for file' in str(e):
+                        continue
+                    elif 'Bad CRC-32 for file' in str(e):
+                        continue
+                    else:
+                        print("Exception: ",str(e))
+                        
+                    showinfo(title="Password found", message="The password is: "+str(foo))
+                    zip_file.close()
+                    found=True
+                    print(str(foo))
+                    break
                 else:
                     showinfo(title="Password found", message="The password is: "+str(foo))
                     zip_file.close()
